@@ -37,12 +37,11 @@ class GridImage extends React.Component {
     // console.log('[GridImage#componentDidMount]');
     // console.dir(this.refs);
 
-    var self = this;    
-    this.refs.target.ondragstart = function(e){
-      e.dataTransfer.effectAllowed = "move";
-      e.dataTransfer.setData("text/plain", self.props.file.name);
+    var self = this;
+    this.refs.target.ondragstart = function(e) {
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', self.props.file.name);
     };
-
   }
 
   render() {
@@ -52,9 +51,7 @@ class GridImage extends React.Component {
     const thumbnail = this.props.file.path + '/' + this.props.file.name;
 
     return (
-      <li className={`card ${this.props.selected && 'selected'}`}
-        ref="target"
-        >
+      <li className={`card ${this.props.selected && 'selected'}`} ref="target">
         {this.props.file.isPhoto ? (
           <img
             draggable="true"

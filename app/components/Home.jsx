@@ -6,7 +6,6 @@ import GridImage from './GridImage';
 import { remote } from 'electron';
 const dialog = remote.dialog;
 const app = remote.app;
-const { ipcRenderer } = window.require('electron');
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -24,39 +23,37 @@ export default class Home extends React.Component {
     };
 
     this.handleOnCheckFile = this.handleOnCheckFile.bind(this);
-    this.handleDraggingState = this.handleDraggingState.bind(this);      
+    this.handleDraggingState = this.handleDraggingState.bind(this);
   }
 
-  handleDraggingState(arg){
-
+  handleDraggingState(arg) {
     console.log('handleDraggingState : ' + arg);
 
-    switch(arg){
-      case 'favorites' :{
+    switch (arg) {
+      case 'favorites': {
         console.log('1111');
         this.setState({
-          dragging1: 'dragging',
-          //dragging2: '',      
+          dragging1: 'dragging'
+          //dragging2: '',
         });
         break;
       }
-      case 'checked':{
+      case 'checked': {
         console.log('2222');
         this.setState({
-          //dragging1: '', 
-          dragging2: 'dragging',    
+          //dragging1: '',
+          dragging2: 'dragging'
         });
         break;
       }
       default:
         console.log('333');
         this.setState({
-          dragging1: '', 
-          dragging2: '',    
+          dragging1: '',
+          dragging2: ''
         });
         break;
     }
-
   }
 
   componentDidMount() {
@@ -68,61 +65,63 @@ export default class Home extends React.Component {
 
     var self = this;
 
-    // DragEnter/DragLeave control 
-    this.refs.favorites.ondragenter = function(e){
+    // DragEnter/DragLeave control
+    this.refs.favorites.ondragenter = function(e) {
+      e.preventDefault();
       self.handleDraggingState('favorites');
     };
-    this.refs.checked.ondragenter = function(e){
+    this.refs.checked.ondragenter = function(e) {
+      e.preventDefault();
       self.handleDraggingState('checked');
     };
 
-    this.refs.favorites.ondragleave = this.refs.checked.ondragleave = function(e){
+    this.refs.favorites.ondragleave = this.refs.checked.ondragleave = function(
+      e
+    ) {
+      e.preventDefault();
       self.handleDraggingState('');
     };
 
-
     // Drop control
-    this.refs.favorites.ondragover = function(e){
+    this.refs.favorites.ondragover = function(e) {
       e.preventDefault();
     };
 
-    this.refs.favorites.ondrop = function(e){
+    this.refs.favorites.ondrop = function(e) {
       e.preventDefault();
-      
-      const target = e.dataTransfer.getData("text/plain");
+
+      const target = e.dataTransfer.getData('text/plain');
       if (self.state.list1.indexOf(target) == -1) {
         self.setState({
           list1: self.state.list1.concat([target]),
-          dragging1: '',
+          dragging1: ''
         });
-      }else{
+      } else {
         self.setState({
-          dragging1: '',
+          dragging1: ''
         });
       }
-
     };
 
-    this.refs.checked.ondragover = function(e){
+    this.refs.checked.ondragover = function(e) {
       e.preventDefault();
     };
 
-    this.refs.checked.ondrop = function(e){
+    this.refs.checked.ondrop = function(e) {
       e.preventDefault();
 
-      const target = e.dataTransfer.getData("text/plain");
+      const target = e.dataTransfer.getData('text/plain');
       if (self.state.list2.indexOf(target) == -1) {
         self.setState({
           list2: self.state.list2.concat([target]),
-          dragging2: '',
+          dragging2: ''
         });
-      }else{
+      } else {
         self.setState({
-          dragging2: '',
+          dragging2: ''
         });
-      }      
+      }
     };
-
   }
 
   handleOpen() {
@@ -209,12 +208,30 @@ export default class Home extends React.Component {
             </div>
             <div className="pane-sm sidebar">
               <h5>Drag and drop in here.</h5>
-              <nav id="favorites" ref="favorites" className={`nav-group area-drop ${this.state.dragging1}`}>
-                <h5 className="nav-group-title"　style={{pointerEvents:'none'}} >Favorites</h5>
+              <nav
+                id="favorites"
+                ref="favorites"
+                className={`nav-group area-drop ${this.state.dragging1}`}
+              >
+                <h5
+                  className="nav-group-title"
+                  style={{ pointerEvents: 'none' }}
+                >
+                  Favorites
+                </h5>
                 {List1}
               </nav>
-              <nav id="checked"  ref="checked" className={`nav-group area-drop ${this.state.dragging2}`}>
-                <h5 className="nav-group-title"　style={{pointerEvents:'none'}} >Checked</h5>
+              <nav
+                id="checked"
+                ref="checked"
+                className={`nav-group area-drop ${this.state.dragging2}`}
+              >
+                <h5
+                  className="nav-group-title"
+                  style={{ pointerEvents: 'none' }}
+                >
+                  Checked
+                </h5>
                 {List2}
               </nav>
             </div>
