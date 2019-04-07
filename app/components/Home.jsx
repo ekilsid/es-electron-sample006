@@ -24,6 +24,9 @@ export default class Home extends React.Component {
 
     this.handleOnCheckFile = this.handleOnCheckFile.bind(this);
     this.handleDraggingState = this.handleDraggingState.bind(this);
+
+    this.refFavorites = React.createRef();
+    this.refChecked = React.createRef();
   }
 
   handleDraggingState(arg) {
@@ -66,16 +69,16 @@ export default class Home extends React.Component {
     var self = this;
 
     // DragEnter/DragLeave control
-    this.refs.favorites.ondragenter = function(e) {
+    this.refFavorites.current.ondragenter = function(e) {
       e.preventDefault();
       self.handleDraggingState('favorites');
     };
-    this.refs.checked.ondragenter = function(e) {
+    this.refChecked.current.ondragenter = function(e) {
       e.preventDefault();
       self.handleDraggingState('checked');
     };
 
-    this.refs.favorites.ondragleave = this.refs.checked.ondragleave = function(
+    this.refFavorites.current.ondragleave = this.refChecked.current.ondragleave = function(
       e
     ) {
       e.preventDefault();
@@ -83,11 +86,11 @@ export default class Home extends React.Component {
     };
 
     // Drop control
-    this.refs.favorites.ondragover = function(e) {
+    this.refFavorites.current.ondragover = function(e) {
       e.preventDefault();
     };
 
-    this.refs.favorites.ondrop = function(e) {
+    this.refFavorites.current.ondrop = function(e) {
       e.preventDefault();
 
       const target = e.dataTransfer.getData('text/plain');
@@ -103,11 +106,11 @@ export default class Home extends React.Component {
       }
     };
 
-    this.refs.checked.ondragover = function(e) {
+    this.refChecked.current.ondragover = function(e) {
       e.preventDefault();
     };
 
-    this.refs.checked.ondrop = function(e) {
+    this.refChecked.current.ondrop = function(e) {
       e.preventDefault();
 
       const target = e.dataTransfer.getData('text/plain');
@@ -209,8 +212,7 @@ export default class Home extends React.Component {
             <div className="pane-sm sidebar">
               <h5>Drag and drop in here.</h5>
               <nav
-                id="favorites"
-                ref="favorites"
+                ref={this.refFavorites}
                 className={`nav-group area-drop ${this.state.dragging1}`}
               >
                 <h5
@@ -222,8 +224,7 @@ export default class Home extends React.Component {
                 {List1}
               </nav>
               <nav
-                id="checked"
-                ref="checked"
+                ref={this.refChecked}
                 className={`nav-group area-drop ${this.state.dragging2}`}
               >
                 <h5

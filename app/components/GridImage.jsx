@@ -7,8 +7,10 @@ const childProcess = window.require('child_process');
 class GridImage extends React.Component {
   constructor(props) {
     super(props);
-    console.log('[GridImage#constructor]');
-    console.dir(this.props);
+    // console.log('[GridImage#constructor]');
+    // console.dir(this.props);
+
+    this.targetRef = React.createRef();
   }
 
   onExec(file) {
@@ -34,24 +36,27 @@ class GridImage extends React.Component {
   }
 
   componentDidMount() {
-    // console.log('[GridImage#componentDidMount]');
-    // console.dir(this.refs);
+    console.log('[GridImage#componentDidMount]');
+    console.dir(this.targetRef);
 
     var self = this;
-    this.refs.target.ondragstart = function(e) {
+    this.targetRef.current.ondragstart = function(e) {
       e.dataTransfer.effectAllowed = 'move';
       e.dataTransfer.setData('text/plain', self.props.file.name);
     };
   }
 
   render() {
-    console.log('[GridImage#render]');
-    console.dir(this.props);
+    // console.log('[GridImage#render]');
+    // console.dir(this.props);
 
     const thumbnail = this.props.file.path + '/' + this.props.file.name;
 
     return (
-      <li className={`card ${this.props.selected && 'selected'}`} ref="target">
+      <li
+        className={`card ${this.props.selected && 'selected'}`}
+        ref={this.targetRef}
+      >
         {this.props.file.isPhoto ? (
           <img
             draggable="true"
