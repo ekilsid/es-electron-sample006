@@ -18,45 +18,25 @@ export default class Home extends React.Component {
       selected: [],
       list1: [],
       list2: [],
-      dragging1: '',
-      dragging2: ''
     };
 
     this.handleOnCheckFile = this.handleOnCheckFile.bind(this);
-    this.handleDraggingState = this.handleDraggingState.bind(this);
 
     this.refFavorites = React.createRef();
     this.refChecked = React.createRef();
   }
 
-  handleDraggingState(arg) {
-    console.log('handleDraggingState : ' + arg);
+  handleCheckDragging(target, e){
 
-    switch (arg) {
-      case 'favorites': {
-        console.log('1111');
-        this.setState({
-          dragging1: 'dragging'
-          //dragging2: '',
-        });
-        break;
+      const rect = target.getBoundingClientRect();
+
+      let checkX = e.pageX <= rect.x || e.pageX >= (rect.x + rect.width);
+      let checkY = e.pageY <= rect.y || e.pageY >= (rect.y + rect.height);
+      if(checkX || checkY){
+        target.classList.remove('dragging');
+      }else{
+        target.classList.add('dragging');
       }
-      case 'checked': {
-        console.log('2222');
-        this.setState({
-          //dragging1: '',
-          dragging2: 'dragging'
-        });
-        break;
-      }
-      default:
-        console.log('333');
-        this.setState({
-          dragging1: '',
-          dragging2: ''
-        });
-        break;
-    }
   }
 
   componentDidMount() {
@@ -71,19 +51,22 @@ export default class Home extends React.Component {
     // DragEnter/DragLeave control
     this.refFavorites.current.ondragenter = function(e) {
       e.preventDefault();
-      self.handleDraggingState('favorites');
+      self.handleCheckDragging(self.refFavorites.current, e);
     };
     this.refChecked.current.ondragenter = function(e) {
       e.preventDefault();
-      self.handleDraggingState('checked');
+      self.handleCheckDragging(self.refChecked.current, e);
     };
 
-    this.refFavorites.current.ondragleave = this.refChecked.current.ondragleave = function(
-      e
-    ) {
+    this.refFavorites.current.ondragleave = function(e) {
       e.preventDefault();
-      self.handleDraggingState('');
+      self.handleCheckDragging(self.refFavorites.current, e);
     };
+
+    this.refChecked.current.ondragleave = function(e) {
+      e.preventDefault();
+      self.handleCheckDragging(self.refChecked.current, e);
+    };    
 
     // Drop control
     this.refFavorites.current.ondragover = function(e) {
@@ -92,16 +75,12 @@ export default class Home extends React.Component {
 
     this.refFavorites.current.ondrop = function(e) {
       e.preventDefault();
+      self.refFavorites.current.classList.remove('dragging');
 
       const target = e.dataTransfer.getData('text/plain');
       if (self.state.list1.indexOf(target) == -1) {
         self.setState({
           list1: self.state.list1.concat([target]),
-          dragging1: ''
-        });
-      } else {
-        self.setState({
-          dragging1: ''
         });
       }
     };
@@ -112,16 +91,12 @@ export default class Home extends React.Component {
 
     this.refChecked.current.ondrop = function(e) {
       e.preventDefault();
+      self.refChecked.current.classList.remove('dragging');
 
       const target = e.dataTransfer.getData('text/plain');
       if (self.state.list2.indexOf(target) == -1) {
         self.setState({
           list2: self.state.list2.concat([target]),
-          dragging2: ''
-        });
-      } else {
-        self.setState({
-          dragging2: ''
         });
       }
     };
